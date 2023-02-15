@@ -1,0 +1,10 @@
+services:
+  employees:
+    url: http://apisix:9080
+    response_header_timeout_seconds: 5
+bundles:
+  authz:
+    service: employees
+    resource: /bundles/bundle.tar.gz
+decision_logs:
+  console: true

@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  apisix:
+    image: apache/apisix:3.1.0-debian
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./apisix/config.yml:/usr/local/apisix/conf/config.yaml:ro
+      - ./apisix/apisix.yml:/usr/local/apisix/conf/apisix.yaml:ro
+      - ./bundle.tar.gz:/var/bundles/bundle.tar.gz:ro
+  opa:
+    image: openpolicyagent/opa:0.49.0
+    platform: linux/amd64
+    command:
+      - "run"
+      - "--server"
+      - "-c"
+      - "/var/opa/config.yml"
+    volumes:
+      - ./opa/config.yml:/var/opa/config.yml:ro
+    depends_on:
+      - apisix
+  boot:
+    build: .
+    environment:
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres?currentSchema=secure
+      APP_OPAENDPOINT: http://opa:8181/v1/data/ch/frankel/blog/secureboot
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: "root"
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+

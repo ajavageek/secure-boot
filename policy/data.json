@@ -1,0 +1,8 @@
+{
+  "hierarchy": {
+    "alice": { "subordinate": null },
+    "bob" : { "subordinate": "alice" },
+    "betty": { "subordinate": "charlie" },
+    "charlie": { "subordinate": null }
+  }
+}

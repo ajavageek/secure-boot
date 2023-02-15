@@ -1,0 +1,9 @@
+deployment:
+  role: data_plane
+  role_data_plane:
+    config_provider: yaml
+nginx_config:
+  http_server_configuration_snippet: |
+      location /bundles/ {
+          root /var;
+      }
