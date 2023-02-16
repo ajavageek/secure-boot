@@ -28,8 +28,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres?currentSchema=secure
       APP_OPAENDPOINT: http://opa:8181/v1/data/ch/frankel/blog/secureboot
-    ports:
-      - "8080:8080"
     depends_on:
       - database
   database:

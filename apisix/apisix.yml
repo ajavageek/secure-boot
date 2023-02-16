@@ -1,2 +1,31 @@
-consumers: []
+consumers:
+  - username: alice
+    plugins:
+      key-auth:
+        key: alice
+  - username: betty
+    plugins:
+      key-auth:
+        key: betty
+  - username: bob
+    plugins:
+      key-auth:
+        key: bob
+  - username: charlie
+    plugins:
+      key-auth:
+        key: charlie
+routes:
+  - uri: /finance/salary*
+    upstream:
+      type: roundrobin
+      nodes:
+        "boot:8080": 1
+    plugins:
+      key-auth:
+        header: Authorization
+      proxy-rewrite:
+        headers:
+          set:
+            X-Account: $consumer_name
 #END

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.springframework.context.support.beans
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.router
 
@@ -28,6 +29,9 @@ internal fun routes() = beans {
     bean {
         val repo = ref<EmployeeRepository>()
         router {
+            val props = ref<AppProperties>()
+            val opaWebClient = WebClient.create(props.opaEndpoint)
+            filter { req, next -> validateOpa(opaWebClient, req, next) }
             GET("/finance/salary/{user_name}") {
                 val userName = it.pathVariable("user_name")
                 val maybeEmployee = repo.findById(userName)
